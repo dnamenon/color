@@ -28,15 +28,21 @@ func main() {
 }
 
 func Color(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	x := 600
+	y := 600
 
-	m := image.NewRGBA(image.Rect(0, 0, 640, 480))
+	tangle := image.Rect(0, 0, x, y)
+	m := image.NewRGBA(tangle)
+
 	m.Set(5, 5, color.RGBA{255, 0, 0, 255})
 
 	palt := palette.WebSafe
 	total := len(palt)
 
 	fmt.Println(total)
+
 	var img image.Image = m
+	pix(&img)
 	writeImage(w, &img)
 }
 
@@ -52,4 +58,12 @@ func writeImage(w http.ResponseWriter, img *image.Image) {
 	if _, err := w.Write(buffer.Bytes()); err != nil {
 		log.Println("unable to write image.")
 	}
+}
+
+func pix(img *image.Image) {
+	buf := new(bytes.Buffer)
+	err := jpeg.Encode(buf, *img, nil)
+	fmt.Println(err)
+	arr := buf.Bytes()
+	fmt.Println(arr)
 }
